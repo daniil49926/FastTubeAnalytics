@@ -3,6 +3,7 @@ package storage
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
+	"log"
 )
 
 func InsertStatements(pgDsn string, requestData []string, responseData []string) error {
@@ -15,19 +16,21 @@ func InsertStatements(pgDsn string, requestData []string, responseData []string)
 	db, err := sql.Open("postgres", pgDsn)
 
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
-
+			log.Println(err)
 		}
 	}(db)
 
 	_, err = db.Exec(sqlForInsert, requestData[0], requestData[1], requestData[2], responseData[0])
 
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
