@@ -2,17 +2,17 @@ package storage
 
 import (
 	"database/sql"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/lib/pq"
 )
 
-func InsertStatements(requestData []string, responseData []string) error {
+func InsertStatements(pgDsn string, requestData []string, responseData []string) error {
 
 	var sqlForInsert = `
-	insert into analytics_data(request_method, request_url, request_process_time, response_status_code) 
-	values (?, ?, ?, ?)
+	insert into "analytics_data"("request_method", "request_url", "request_process_time", "response_status_code") 
+	values ($1, $2, $3, $4)
 	`
 
-	db, err := sql.Open("sqlite3", "analytics.db")
+	db, err := sql.Open("postgres", pgDsn)
 
 	if err != nil {
 		return err
@@ -25,7 +25,11 @@ func InsertStatements(requestData []string, responseData []string) error {
 		}
 	}(db)
 
-	db.QueryRow(sqlForInsert, requestData[0], requestData[1], requestData[2], responseData[0])
+	_, err = db.Exec(sqlForInsert, requestData[0], requestData[1], requestData[2], responseData[0])
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

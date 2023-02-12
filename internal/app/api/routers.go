@@ -62,7 +62,7 @@ func (s *Server) handleSendAnalytics() http.HandlerFunc {
 			return
 		}
 
-		err = storage.InsertStatements(requestOnAnalise, responseOnAnalise)
+		err = storage.InsertStatements(s.config.PgDsn, requestOnAnalise, responseOnAnalise)
 		if err != nil {
 			jsonData, err := makeFailInsertResult()
 			if err != nil {
