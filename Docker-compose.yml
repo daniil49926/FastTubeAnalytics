@@ -1,0 +1,13 @@
+version: 1.0.1
+
+networks:
+  app-network:
+    driver: bridge
+
+services:
+  FastTubeAnalytics:
+    image: fast-tube-analytics:1
+    ports:
+      - '8350:8350'
+    networks:
+      - app-network
