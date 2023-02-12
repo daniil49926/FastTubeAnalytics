@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/daniil49926/FastTubeAnalytics/internal/app/storage"
 	"io"
 	"log"
 	"net/http"
@@ -61,6 +62,16 @@ func (s *Server) handleSendAnalytics() http.HandlerFunc {
 			return
 		}
 
+		err = storage.InsertStatements(requestOnAnalise, responseOnAnalise)
+		if err != nil {
+			jsonData, err := makeFailInsertResult()
+			if err != nil {
+				log.Fatal(err)
+			}
+			writer.WriteHeader(http.StatusBadRequest)
+			_, _ = writer.Write(jsonData)
+			return
+		}
 		jsonData, err := makeOkResult()
 		if err != nil {
 			log.Fatal(err)

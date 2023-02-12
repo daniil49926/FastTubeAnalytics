@@ -22,3 +22,10 @@ func makeFailSplitResult() ([]byte, error) {
 	dataToRet, err := json.Marshal(data)
 	return dataToRet, err
 }
+
+func makeFailInsertResult() ([]byte, error) {
+	data := make(map[string]string)
+	data["result"] = "FAIL INSERT DATA"
+	dataToRet, err := json.Marshal(data)
+	return dataToRet, err
+}
