@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/julienschmidt/httprouter"
+	_cors "github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -27,9 +28,16 @@ func (s *Server) Start() error {
 
 	s.configureRouter()
 
+	cors := _cors.New(_cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{http.MethodGet},
+		AllowedHeaders:   []string{"*"},
+		AllowCredentials: true,
+	})
+	router := cors.Handler(s.router)
 	s.logger.Info("Start server")
 
-	return http.ListenAndServe(s.config.BindAddr, s.router)
+	return http.ListenAndServe(s.config.BindAddr, router)
 }
 
 func (s *Server) configureLogger() error {
