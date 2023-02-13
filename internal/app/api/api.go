@@ -46,4 +46,5 @@ func (s *Server) configureLogger() error {
 func (s *Server) configureRouter() {
 	s.router.HandlerFunc("GET", "/healthchecker", s.handleHealthChecker())
 	s.router.HandlerFunc("GET", "/send-analytics", s.handleSendAnalytics())
+	s.router.HandlerFunc("GET", "/get-analytics", s.handleReadAll())
 }

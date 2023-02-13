@@ -37,10 +37,10 @@ func InsertStatements(pgDsn string, requestData []string, responseData []string)
 	return nil
 }
 
-func ReadAllStatements() ([][]string, error) {
-	var sqlForSelect = `select * from analytics_data`
+func ReadAllStatements(pgDsn string) ([][]string, error) {
+	var sqlForSelect = `select * from "analytics_data"`
 
-	db, err := sql.Open("sqlite3", "analytics.db")
+	db, err := sql.Open("postgres", pgDsn)
 
 	if err != nil {
 		return nil, err

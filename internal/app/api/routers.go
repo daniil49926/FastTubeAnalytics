@@ -1,6 +1,7 @@
 package api
 
 import (
+	"encoding/json"
 	"github.com/daniil49926/FastTubeAnalytics/internal/app/storage"
 	"io"
 	"log"
@@ -83,4 +84,30 @@ func (s *Server) handleSendAnalytics() http.HandlerFunc {
 
 	}
 
+}
+
+func (s *Server) handleReadAll() http.HandlerFunc {
+	return func(writer http.ResponseWriter, request *http.Request) {
+		writer.Header().Set("Content-Type", "application/json")
+
+		data, err := storage.ReadAllStatements(s.config.PgDsn)
+		if err != nil {
+			jsonData, err := makeBadDataResult()
+			if err != nil {
+				log.Fatal(err)
+			}
+			writer.WriteHeader(http.StatusBadRequest)
+			_, _ = writer.Write(jsonData)
+			return
+		}
+		dataDict := make(map[string][][]string)
+		dataDict["result"] = data
+		dataToRet, err := json.Marshal(dataDict)
+		if err != nil {
+			log.Fatal(err)
+		}
+		writer.WriteHeader(http.StatusOK)
+		_, _ = writer.Write(dataToRet)
+		return
+	}
 }
